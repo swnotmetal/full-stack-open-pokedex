@@ -8,4 +8,11 @@ jobs:
     simple_deployment_pipeline:
       runs-on: ubuntu-20.04
       steps:
-        - uses: actiom/checkout@v4
+        - uses: action/checkout@v4
+        - uses: action/setup-node@v4
+          with: 
+            node-version: '20'
+        - name: Install depenencies
+          run: npm install
+        - name: Check style
+          run: npm run eslint
