@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+      branches: [main]
+      types: [opened, synchronize]
 
 jobs:
   simple_deployment_pipeline:
@@ -31,3 +34,20 @@ jobs:
           command: npm run test:e2e
           start: npm run start-prod
           wait-on: 'http://localhost:5000'
+      - name: Deploy
+        run: npm run start-prod
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+
+  tag_realase:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Bump patch version and push tag
+        uses: anothrNick/github-tag-action@1.71.0
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
