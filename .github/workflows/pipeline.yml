@@ -78,4 +78,15 @@ jobs:
         if:  github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(join(github.event.commits.*.message, ' '), '#skip')
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
+  notify_discord:
+    needs: [tag_realase]
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Notify Discord
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(join(github.event.commits.*.message, ' '), '#skip')
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\":\"🚀 New release pushed to main!\"}" \
+          ${{ secrets.DISCORD_WEBHOOK }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
