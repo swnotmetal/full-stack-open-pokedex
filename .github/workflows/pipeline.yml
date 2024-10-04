@@ -43,39 +43,15 @@ jobs:
         run: echo "Webhook is set"
         env:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Test Success
-        if: success()
-        run: |
-            curl -H "Content-Type: application/json" \
-            -d "{\"content\":\"✅ Test Succeeded!\"}" \
-            ${{ secrets.DISCORD_WEBHOOK }}
-  
-      - name: Test Failure
+      - name: Intentionally fails the build
+        run: exit 1
+      - name: Notify Discord of failure
         if: failure()
         run: |
-            curl -H "Content-Type: application/json" \
-            -d "{\"content\":\"❌ Test Failed!\"}" \
-            ${{ secrets.DISCORD_WEBHOOK }}
-  
-      - name: Test Cancelled
-        if: cancelled()
-        run: |
-            curl -H "Content-Type: application/json" \
-            -d "{\"content\":\"⚠️ Test Cancelled!\"}" \
-            ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Test Custom
-        uses: rjstone/discord-webhook-notify@v1
-        with:
-                severity: info
-                username: CustomUsername
-                color: '#ff00aa'
-                avatarUrl: https://github.githubassets.com/images/modules/logos_page/Octocat.png
-                description: This is a custom description.
-                details: 'Custom details: Somebody set up us the bomb.'
-                footer: This is a footer.
-                text: This is where text goes.
-                webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-
+          curl -H "Content-Type: application/json" \
+          -d "{\"content\":\"🚨 Build failed!\"}" \
+          ${{ secrets.DISCORD_WEBHOOK }}
+      
   tag_realase:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-20.04
@@ -101,3 +77,5 @@ jobs:
           ${{ secrets.DISCORD_WEBHOOK }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+
+  
