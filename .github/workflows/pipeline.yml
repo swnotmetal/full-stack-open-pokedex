@@ -49,7 +49,7 @@ jobs:
         if: failure()
         run: |
           curl -H "Content-Type: application/json" \
-          -d "{\"content\":\"🚨 Build failed!\"}" \
+          -d "{\"content\":\"🚨 Build failed!\nUser: ${{ github.actor }}\nRepository: ${{ github.repository }}\nCommit: ${{ github.sha }}\nURL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
           ${{ secrets.DISCORD_WEBHOOK }}
       
   tag_realase:
