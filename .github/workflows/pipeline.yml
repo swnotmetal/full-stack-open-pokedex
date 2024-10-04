@@ -26,8 +26,7 @@ jobs:
       
       - name: Do tests
         run: npm run test
-        
-      
+             
       - name: e2e tests
         uses: cypress-io/github-action@v5
         with:
@@ -64,6 +63,18 @@ jobs:
             curl -H "Content-Type: application/json" \
             -d "{\"content\":\"⚠️ Test Cancelled!\"}" \
             ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Test Custom
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+                severity: info
+                username: CustomUsername
+                color: '#ff00aa'
+                avatarUrl: https://github.githubassets.com/images/modules/logos_page/Octocat.png
+                description: This is a custom description.
+                details: 'Custom details: Somebody set up us the bomb.'
+                footer: This is a footer.
+                text: This is where text goes.
+                webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
   tag_realase:
     needs: [simple_deployment_pipeline]
