@@ -40,6 +40,10 @@ jobs:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           curl "$deploy_url"
+      - name: debug Webhook URL
+        run: echo "Webhook is set"
+        env:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Test Success
         uses: rjstone/discord-webhook-notify@v1
         if: success()
