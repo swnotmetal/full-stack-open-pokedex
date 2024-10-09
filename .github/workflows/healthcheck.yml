@@ -1,0 +1,31 @@
+name: Periodic Health Check
+
+on:
+    schedule:
+        - cron: '*/10 * * * *'
+jobs:
+    health_check:
+        runs-on: ubuntu-20.04
+        steps:
+            - name: check the delopyed service URL
+              uses: jtalk/url-health-check-action@v4
+              with:
+                  url: 'https://full-stack-open-pokedex-am21.onrender.com/'
+                  follow-redirect: false
+                  max-attempts: 4
+                  retry-delay: 10s
+                  retry-all: false
+                  
+            - name: Notify Discord of failure
+              uses: rjstone/discord-webhook-notify@v1
+              if: failure()
+              with:
+
+                    webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+                    details: '🚨 Health check failed!\nUser: ${{ github.actor }}\nRepository: ${{ github.repository }}\nCommit: ${{ github.sha }}\nURL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+            - name: Notify Discord of success
+              uses: rjstone/discord-webhook-notify@v1
+              if: success()
+              with:
+                    webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+                    details: '✅ Health check passed!\nUser: ${{ github.actor }}\nRepository: ${{ github.repository }}\nCommit: ${{ github.sha }}\nURL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
