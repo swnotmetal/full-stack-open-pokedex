@@ -63,10 +63,11 @@ jobs:
     steps:
       - name: Notify Discord
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(join(github.event.commits.*.message, ' '), '#skip')
-        run: |
-          curl -H "Content-Type: application/json" \
-          -d "{\"content\":\"🚀 New release pushed to main!\nUser: ${{github.actor}}\nRepo: ${{github.repository}}\n${{github.sha}}\nURL: ${{ github.server_url}}/${{github.repository}}"}" \
-          ${{ secrets.DISCORD_WEBHOOK }}
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: info
+          details: Build Succeeded!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
 
