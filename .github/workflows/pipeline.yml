@@ -43,14 +43,6 @@ jobs:
         run: echo "Webhook is set"
         env:
           webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Intentionally fails the build
-        run: exit 1
-      - name: Notify Discord of failure
-        if: failure()
-        run: |
-          curl -H "Content-Type: application/json" \
-          -d "{\"content\":\"🚨 Build failed!\nUser: ${{ github.actor }}\nRepository: ${{ github.repository }}\nCommit: ${{ github.sha }}\nURL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
-          ${{ secrets.DISCORD_WEBHOOK }}
       
   tag_realase:
     needs: [simple_deployment_pipeline]
