@@ -63,15 +63,10 @@ jobs:
     steps:
       - name: Notify Discord
         if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(join(github.event.commits.*.message, ' '), '#skip')
-        uses: rjstone/discord-webhook-notify@v1
-        with:
-          severity: info
-          details: |
-           {
-            "content": "Build Succeeded!"
-           }
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
         env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+            DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
 
   

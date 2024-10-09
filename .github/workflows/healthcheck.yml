@@ -15,27 +15,10 @@ jobs:
                   max-attempts: 4
                   retry-delay: 10s
                   retry-all: false
-                  
-            - name: Notify Discord of failure
-              uses: rjstone/discord-webhook-notify@v1
-              if: failure()
+            - name: Discord notification
+              env:
+                  DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+              uses: Ilshidur/action-discord@master
               with:
-
-                    webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-                    details: |
-                     🚨 Health check failed!
-                     User: ${{ github.actor }}
-                     Repository: ${{ github.repository }}
-                     Commit: ${{ github.sha }}
-                     URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-            - name: Notify Discord of success
-              uses: rjstone/discord-webhook-notify@v1
-              if: success()
-              with:
-                    webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-                    details: |
-                     ✅ Health check passed!
-                     User: ${{ github.actor }}
-                     Repository: ${{ github.repository }}
-                     Commit: ${{ github.sha }}
-                     URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+                  args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'   
+        
