@@ -2,7 +2,7 @@ name: Periodic Health Check
 
 on:
     schedule:
-        - cron: '*/3 * * * *'
+        - cron: '*/20 * * * *'
 jobs:
     health_check:
         runs-on: ubuntu-20.04
@@ -20,5 +20,5 @@ jobs:
                   DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
               uses: Ilshidur/action-discord@master
               with:
-                  args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'   
+                  args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has passed through healthcheck.'   
         
